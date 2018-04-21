@@ -1,0 +1,20 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.ui {
+  display: flex;
+  height: calc(100vh - 20px);
+  overflow: scroll;
+  padding: 10px;
+
+  app-radio {
+    width: 70vw;
+    display: block;
+  }
+
+  app-message-logger {
+    width: 30vw;
+  }
+}
