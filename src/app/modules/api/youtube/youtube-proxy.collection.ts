@@ -6,7 +6,7 @@ export class YoutubeProxyCollection<TModel extends BaseModel> extends BaseCollec
   model: any = BaseModel;
 
   hostName(){
-    return 'https://api.cloud-player.io';
+    return 'https://www.googleapis.com/youtube/v3';
   }
 
   basePath() {
