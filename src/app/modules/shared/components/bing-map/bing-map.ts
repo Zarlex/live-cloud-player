@@ -156,7 +156,7 @@ export class BingMapComponent implements OnInit, OnChanges {
     httpParams = httpParams.set('key', 'AmrReV9OPw9ybu5AkhPD8v5WWmR9rqw9Dqzr6hSXhjJdFykhOqXlH14S4-NJ2fDo');
     httpParams = httpParams.set('includeEntityTypes', 'CountryRegion');
     httpParams = httpParams.set('includeNeighborhood', 'true');
-    this.http.get(`http://dev.virtualearth.net/REST/v1/Locations/${origin.latitude},${origin.longitude}`, {
+    this.http.get(`https://dev.virtualearth.net/REST/v1/Locations/${origin.latitude},${origin.longitude}`, {
       params: httpParams
     }).toPromise().then((rsp: any) => {
       if (rsp.resourceSets && rsp.resourceSets[0] && rsp.resourceSets[0].resources.length > 0) {
