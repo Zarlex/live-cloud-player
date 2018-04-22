@@ -1,7 +1,12 @@
 import {ModelSaveOptions} from 'backbone';
 import {BaseModel} from '../../backbone/models/base.model';
+import {queryParam} from '../../backbone/decorators/query-param.decorator';
 
 export class YoutubeProxyModel extends BaseModel {
+
+  @queryParam()
+  key = 'AIzaSyChl_ZzHjy7qX1A48q-P63SjffSHVvb9aE';
+
   url = (...args): string => {
     const id = this.get(this.idAttribute);
     this.set(this.idAttribute, null, {silent: true});
@@ -11,11 +16,11 @@ export class YoutubeProxyModel extends BaseModel {
   };
 
   hostName(){
-    return 'https://www.googleapis.com/youtube/v3';
+    return 'https://www.googleapis.com';
   }
 
   basePath() {
-    return '/proxy/youtube';
+    return '/youtube/v3';
   }
 
   sync(method: string, model: any, options: any = {}) {

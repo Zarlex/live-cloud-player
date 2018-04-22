@@ -24,9 +24,10 @@ export class TracksYoutubeCollection<TModel extends TrackYoutubeModel>
   };
 
   public static getTrackDetails(trackIds: Array<string>): Promise<any> {
-    const url = `${YoutubeProxyCollection.prototype.hostName.call(this)}/proxy/youtube/videos`;
+    const url = `${YoutubeProxyCollection.prototype.hostName.call(this)}/youtube/v3/videos`;
     return TracksYoutubeCollection.prototype.request.call(this, url, 'GET', {
       params: {
+        key: 'AIzaSyChl_ZzHjy7qX1A48q-P63SjffSHVvb9aE',
         part: 'statistics,player,snippet,liveStreamingDetails,recordingDetails',
         id: trackIds.join(',')
       }
