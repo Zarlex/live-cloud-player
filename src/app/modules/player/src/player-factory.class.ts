@@ -17,7 +17,7 @@ import {ITrack} from '../../api/tracks/track.interface';
 
 @Injectable()
 export class PlayerFactory {
-  public static playerWidth = 320;
+  public static playerWidth = 200;
 
   private _resolver: ComponentFactoryResolver;
   private _container: ViewContainerRef;
@@ -80,7 +80,8 @@ export class PlayerFactory {
         const player = playersForProvider.pop();
         const playerInstance = player.component.instance;
         const playerStatus = playerInstance.getStatus();
-        if (playerStatus === PlayerStatus.NotInitialised || playerStatus === PlayerStatus.Stopped) {
+        if (playerStatus === PlayerStatus.NotInitialised) {
+          console.error('DESTROY')
           player.component.destroy();
           this._playerStore.remove(player);
         }
@@ -130,11 +131,13 @@ export class PlayerFactory {
       this._playerStore.add(newPlayer);
       // Make sure that there are maximum 2 instances of each player
       this.cleanUp();
+      console.log('CREATE NEW PLAYER');
       return newPlayer.component;
     }
   }
 
   public destroyPlayer(player: ComponentRef<IPlayer>): void {
     player.instance.deInitialize();
+    this.cleanUp();
   }
 }

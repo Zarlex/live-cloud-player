@@ -1,0 +1,14 @@
+<div class="radio">
+  <div class="meta">
+    <div class="on-air">ON AIR {{ts}}</div>
+    <div *ngIf="title"
+         class="title">{{title}}</div>
+  </div>
+  <div class="players">
+    <app-player-manager
+      [playQueue]="playQueue"
+      [volume]="playerVolume"
+      (selectedTrackChange)="setSelectedTrack($event)">
+    </app-player-manager>
+  </div>
+</div>

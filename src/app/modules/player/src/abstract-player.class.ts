@@ -67,7 +67,6 @@ export abstract class AbstractPlayer implements OnInit {
   protected abstract getPlayerEl(): ElementRef;
 
   constructor() {
-    this.setStatus(PlayerStatus.NotInitialised);
     this._viewReadyPromise = new Promise((resolve) => {
       this._viewReadyResolver = resolve;
     });
@@ -303,7 +302,7 @@ export abstract class AbstractPlayer implements OnInit {
           if (!this.track.title) {
             this.track.fetch();
           }
-
+          console.log('INITIALISED');
           resolve();
         });
       });

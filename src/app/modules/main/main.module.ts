@@ -8,6 +8,7 @@ import {BackboneModule} from '../backbone/backbone.module';
 import {SharedModule} from '../shared/shared.module';
 import {PlayerModule} from '../player/player.module';
 import {MainRoutingModule} from './main.routes';
+import {TvComponent} from './components/tv/tv';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import {MainRoutingModule} from './main.routes';
     MainRoutingModule
   ],
   declarations: [
-    MainComponent
+    MainComponent,
+    TvComponent
   ],
   providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [MainComponent]

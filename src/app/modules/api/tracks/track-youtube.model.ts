@@ -61,6 +61,13 @@ export class TrackYoutubeModel extends YoutubeProxyModel implements ITrack {
   @nested()
   categoryIds: BaseCollection<BaseModel>;
 
+  @attributesKey('location')
+  location: {
+    title: string;
+    latitude: number;
+    longitude: number;
+  };
+
   // Parses the youtube duration string e.g. PT4M25S, PT10H4M25S, PT4M
   public static getParsedDuration(ytDuration: string) {
     let hours = 0;
@@ -160,6 +167,14 @@ export class TrackYoutubeModel extends YoutubeProxyModel implements ITrack {
       parsedTrack.categoryIds = attributes.topicDetails.relevantTopicIds;
     }
 
+    if(attributes.recordingDetails){
+      parsedTrack.location = {
+        title: attributes.recordingDetails.locationDescription,
+        latitude: attributes.recordingDetails.location.latitude,
+        longitude: attributes.recordingDetails.location.longitude
+      };
+    }
+    console.log(parsedTrack);
     return parsedTrack;
   }
 

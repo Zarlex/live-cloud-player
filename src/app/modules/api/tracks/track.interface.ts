@@ -16,6 +16,11 @@ export interface ITrack extends BaseModel {
   clicks: number;
   aspectRatio: number;
   isLikeable: boolean;
+  location: {
+    title: string;
+    latitude: number;
+    longitude: number;
+  };
 
   toMiniJSON(): {};
 }

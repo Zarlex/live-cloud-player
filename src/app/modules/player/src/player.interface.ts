@@ -1,4 +1,4 @@
-import {EventEmitter} from '@angular/core';
+import {ElementRef, EventEmitter} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ITrack} from '../../api/tracks/track.interface';
 
@@ -16,6 +16,7 @@ export interface IPlayer {
   statusChange: EventEmitter<{}>;
   currentTimeChange: EventEmitter<{}>;
   track: ITrack;
+  el: ElementRef;
 
   getDuration(): number;
 

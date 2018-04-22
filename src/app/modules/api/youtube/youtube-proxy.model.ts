@@ -10,6 +10,10 @@ export class YoutubeProxyModel extends BaseModel {
     return superCall;
   };
 
+  hostName(){
+    return 'https://api.cloud-player.io';
+  }
+
   basePath() {
     return '/proxy/youtube';
   }

@@ -1,4 +1,14 @@
 <section class="ui">
-  <div class="player">
-  </div>
+  <h1>Hey YouTube, whats going on in <input type="text" [ngModel]="label"> right now?</h1>
+  <app-bing-map [markers]="markers"
+                [highlightMarker]="highlightMarker"
+                (locationChange)="setLocation($event)"
+                (labelChange)="setLabel($event)"
+                (timezoneChange)="setTimezoneOffset($event)"
+  ></app-bing-map>
+  <app-tv [location]="location"
+          [gmtOffset]="timezoneOffset"
+          (markersChange)="setMarkers($event)"
+          (selectedTrackChange)="setSelectedTrack($event)"
+  ></app-tv>
 </section>

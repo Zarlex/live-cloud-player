@@ -21,7 +21,7 @@ export class YoutubePlayerComponent extends AbstractPlayer implements IPlayer, O
   @Input()
   public track: TrackYoutubeModel;
 
-  constructor(private el: ElementRef) {
+  constructor(public el: ElementRef) {
     super();
     if ((<any>window).YT && (<any>window).YT.loaded) {
       this._ytApiReady = true;
@@ -180,6 +180,10 @@ export class YoutubePlayerComponent extends AbstractPlayer implements IPlayer, O
 
   public getPlayerEl(): ElementRef {
     return this.el;
+  }
+
+  public prevent(ev){
+    ev.preventDefault();
   }
 
   ngOnDestroy(): void {

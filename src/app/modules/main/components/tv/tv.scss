@@ -1,0 +1,59 @@
+:host {
+  .radio {
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+
+    .players {
+      min-width: 320px;
+      max-width: 320px;
+      margin-right: 20px;
+      app-player-manager {
+        height: 320px;
+        width: 320px;
+      }
+    }
+
+    .meta{
+      position: absolute;
+      width: inherit;
+      left: 0;
+      top: -49px;
+      color: white;
+      padding: 10px 20px;
+
+      .on-air,
+      .title{
+        position: absolute;
+        padding: 10px 20px;
+        white-space: nowrap;
+      }
+
+      .on-air{
+        background: red;
+        left: 0;
+      }
+
+      .title{
+        background: rgba(0,0,0,0.8);
+        right: 0;
+        width: calc(100vw - 200px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    //.title{
+    //  background: black;
+    //  color: white;
+    //  position: fixed;
+    //  padding: 10px;
+    //  bottom: 150px;
+    //  right: 0;
+    //  white-space: nowrap;
+    //  overflow: hidden;
+    //  text-overflow: ellipsis;
+    //  width: calc(100vw - 200px);
+    //}
+  }
+}

@@ -14,15 +14,20 @@ export class TracksYoutubeCollection<TModel extends TrackYoutubeModel>
     [key: string]: string | number | boolean
   } = {
     q: <any>null,
-    part: 'snippet'
+    part: 'snippet',
+    eventType: 'live',
+    locationRadius: "500km",
+    maxResults: "50",
+    order: "relevance",
+    type: "video",
+    videoEmbeddable: true
   };
 
   public static getTrackDetails(trackIds: Array<string>): Promise<any> {
-    const url = `${TracksYoutubeCollection.prototype.hostName.call(this)}/proxy/youtube/videos`;
-
+    const url = `${YoutubeProxyCollection.prototype.hostName.call(this)}/proxy/youtube/videos`;
     return TracksYoutubeCollection.prototype.request.call(this, url, 'GET', {
       params: {
-        part: 'statistics,contentDetails,player,topicDetails,snippet',
+        part: 'statistics,player,snippet,liveStreamingDetails,recordingDetails',
         id: trackIds.join(',')
       }
     });
@@ -39,7 +44,7 @@ export class TracksYoutubeCollection<TModel extends TrackYoutubeModel>
 
   fetch(...args) {
     return super.fetch.apply(this, args).then(() => {
-      this.fetchVideoDetails();
+      return this.fetchVideoDetails();
     });
   }
 

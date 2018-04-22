@@ -9,6 +9,7 @@ import {KMilShortenerPipe} from './pipes/k-mil-shortener.pipe';
 import {LimitCollectionresultsPipe} from './pipes/limit-collection-results.pipe';
 import {FullScreenService} from './services/fullscreen.service';
 import {TrackCoverComponent} from './components/track-cover/track-cover.component';
+import {BingMapComponent} from './components/bing-map/bing-map';
 
 @NgModule({
   imports: [
@@ -21,14 +22,16 @@ import {TrackCoverComponent} from './components/track-cover/track-cover.componen
     HumanReadableSecondsPipe,
     KMilShortenerPipe,
     LimitCollectionresultsPipe,
-    TrackCoverComponent
+    TrackCoverComponent,
+    BingMapComponent
   ],
   exports: [
     TimeAgoDirective,
     HumanReadableSecondsPipe,
     KMilShortenerPipe,
     LimitCollectionresultsPipe,
-    TrackCoverComponent
+    TrackCoverComponent,
+    BingMapComponent
   ],
   providers: [
     HumanReadableSecondsPipe,
