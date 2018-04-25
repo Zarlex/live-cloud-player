@@ -1,6 +1,6 @@
 <div class="radio">
   <div class="meta">
-    <div class="on-air">ON AIR {{ts}}</div>
+    <div class="on-air">ON AIR <app-world-clock [location]="location"></app-world-clock></div>
     <div *ngIf="title"
          class="title">{{title}}</div>
   </div>

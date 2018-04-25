@@ -9,6 +9,7 @@ import {SharedModule} from '../shared/shared.module';
 import {PlayerModule} from '../player/player.module';
 import {MainRoutingModule} from './main.routes';
 import {TvComponent} from './components/tv/tv';
+import {UserAnalyticsModule} from '../user-analytics/user-analytics.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {TvComponent} from './components/tv/tv';
     BackboneModule,
     SharedModule,
     PlayerModule,
-    MainRoutingModule
+    MainRoutingModule,
+    UserAnalyticsModule
   ],
   declarations: [
     MainComponent,

@@ -167,14 +167,13 @@ export class TrackYoutubeModel extends YoutubeProxyModel implements ITrack {
       parsedTrack.categoryIds = attributes.topicDetails.relevantTopicIds;
     }
 
-    if(attributes.recordingDetails){
+    if (attributes.recordingDetails) {
       parsedTrack.location = {
         title: attributes.recordingDetails.locationDescription,
         latitude: attributes.recordingDetails.location.latitude,
         longitude: attributes.recordingDetails.location.longitude
       };
     }
-    console.log(parsedTrack);
     return parsedTrack;
   }
 

@@ -1,14 +1,39 @@
 <section class="ui">
-  <h1>Hej YouTube, whats going on in <input type="text" [ngModel]="label"> right now?</h1>
+  <h1>Hej YouTube, whats going on in <input type="text" [ngModel]="label" readonly> right now?</h1>
   <app-bing-map [markers]="markers"
                 [highlightMarker]="highlightMarker"
                 (locationChange)="setLocation($event)"
-                (labelChange)="setLabel($event)"
-                (timezoneChange)="setTimezoneOffset($event)"
-  ></app-bing-map>
-  <app-tv [location]="location"
-          [gmtOffset]="timezoneOffset"
+                (labelChange)="setLabel($event)"></app-bing-map>
+  <app-tv *ngIf="!introVisible"
+          [location]="location"
           (markersChange)="setMarkers($event)"
-          (selectedTrackChange)="setSelectedTrack($event)"
-  ></app-tv>
+          (selectedTrackChange)="setSelectedTrack($event)"></app-tv>
+
+  <div *ngIf="introVisible" class="introduction">
+    <h2>Live broadcasted YouTube videos</h2>
+
+    <p>
+      Find videos around the world that are currently live broadcasted. Drag the map to explore a different country.
+      You will get all the videos that are live broadcasted around that country within a radius of 500km
+    </p>
+
+    <p>This project was developed during a 22h Hackathon at <a href="https://www.dtu.dk/" target="_blank">Technical University of Denmark</a>.
+      The source code is available on <a href="https://github.com/Zarlex/live-cloud-player" target="_blank">GitHub</a>.
+    </p>
+
+    <p>
+      You can follow us on <a href="https://twitter.com/cldplayer" target="_blank">Twitter</a> or check out our free music player
+      <a href="https://cloud-player.io" target="_blank">Cloud-Player</a>
+    </p>
+
+    <button (click)="startSearching()" class="btn btn-primary btn-block" style="margin: 40px 0 20px 0">
+      Start Exploring the World
+    </button>
+  </div>
+
 </section>
+
+<a href="https://github.com/Zarlex/live-cloud-player">
+  <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 99999"
+       src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"
+       alt="Fork me on GitHub"></a>

@@ -18,9 +18,10 @@ export class TracksYoutubeCollection<TModel extends TrackYoutubeModel>
     eventType: 'live',
     locationRadius: "500km",
     maxResults: "50",
-    order: "relevance",
+    order: "date",
     type: "video",
-    videoEmbeddable: true
+    videoEmbeddable: true,
+    cacheBuster: +new Date()
   };
 
   public static getTrackDetails(trackIds: Array<string>): Promise<any> {
@@ -28,7 +29,7 @@ export class TracksYoutubeCollection<TModel extends TrackYoutubeModel>
     return TracksYoutubeCollection.prototype.request.call(this, url, 'GET', {
       params: {
         key: 'AIzaSyChl_ZzHjy7qX1A48q-P63SjffSHVvb9aE',
-        part: 'statistics,player,snippet,liveStreamingDetails,recordingDetails',
+        part: 'player,recordingDetails',
         id: trackIds.join(',')
       }
     });

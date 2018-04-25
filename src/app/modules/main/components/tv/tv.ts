@@ -6,7 +6,6 @@ import {TracksYoutubeCollection} from '../../../api/tracks/tracks-youtube.collec
 import {TrackYoutubeModel} from '../../../api/tracks/track-youtube.model';
 import {ITrack} from '../../../api/tracks/track.interface';
 import set = Reflect.set;
-const moment = require('moment-timezone');
 
 @Component({
   selector: 'app-tv',
@@ -17,7 +16,6 @@ export class TvComponent implements OnInit, OnChanges, AfterViewInit {
   private ready = false;
   private interval;
   public playQueue: PlayQueue<PlayQueueItem>;
-  public isLoading = false;
   public playerVolume = 100;
   public tracks: TracksYoutubeCollection<TrackYoutubeModel>;
   public markers: Array<{ latitude: number, longitude: number }>;
@@ -28,7 +26,7 @@ export class TvComponent implements OnInit, OnChanges, AfterViewInit {
   showPlayer: boolean;
 
   @Input()
-  location: string;
+  location: { latitude: number, longitude: number };
 
   @Input()
   gmtOffset: number;
@@ -48,6 +46,7 @@ export class TvComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private addAllTracks() {
+    console.log('ADD ALL');
     this.markers = [];
     this.playQueue.toJSON().forEach((item) => {
       if (!this.tracks.get(item.id)) {
@@ -55,44 +54,49 @@ export class TvComponent implements OnInit, OnChanges, AfterViewInit {
       }
     });
     this.tracks.each((track: ITrack) => {
-      this.playQueue.add({
-        provider: 'youtube',
-        track: track
-      });
-      this.markers.push({
-        latitude: track.location.latitude,
-        longitude: track.location.longitude
-      });
+      if (!this.playQueue.get(track.id)) {
+        this.playQueue.add({
+          provider: 'youtube',
+          track: track
+        }, {at: 0});
+      }
+      if(track.location && track.location.latitude && track.location.longitude){
+        this.markers.push({
+          latitude: track.location.latitude,
+          longitude: track.location.longitude
+        });
+      }
     });
     this.markersChange.emit(this.markers);
   }
 
-  private fetchTracks(){
-    this.tracks.queryParams.location = this.location;
-    this.tracks.queryParams.radius = '1000km';
+  private getRandomIntInclusive(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
+  }
+
+  private fetchTracks() {
+    const location = `${this.location.latitude},${this.location.longitude}`;
+    this.tracks.queryParams.location = location;
+    this.tracks.queryParams.locationRadius = this.getRandomIntInclusive(500,600)+'km';
+    console.log(location);
     this.tracks.fetch({reset: true}).then(this.addAllTracks.bind(this));
   }
 
   private onLocationChange() {
     if (this.ready) {
       this.fetchTracks();
-      if(this.interval){
+      if (this.interval) {
         clearInterval(this.interval);
       }
-      this.interval = setInterval(this.fetchTracks.bind(this),10000);
+      this.interval = setInterval(this.fetchTracks.bind(this), 15000);
     }
   }
 
-  private calcTime() {
-    if(this.gmtOffset){
-      const localeDate = moment.tz(new Date(), this.gmtOffset);
-      this.ts = localeDate.format('HH:mm:ss');
-    }
-  }
-
-  public setSelectedTrack(track: ITrack){
+  public setSelectedTrack(track: ITrack) {
     this.selectedTrackChange.emit(track);
-    if(track){
+    if (track) {
       this.title = track.title;
     } else {
       this.title = null;
@@ -100,7 +104,6 @@ export class TvComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnInit() {
-    setInterval(this.calcTime.bind(this), 1000);
   }
 
   ngAfterViewInit(): void {
@@ -115,17 +118,12 @@ export class TvComponent implements OnInit, OnChanges, AfterViewInit {
       if (this.location) {
         this.onLocationChange();
       }
-    },1000)
+    }, 1000)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.location && changes.location.currentValue) {
       this.onLocationChange();
-    }
-
-    if (changes.gmtOffset && changes.gmtOffset.currentValue) {
-      console.log(changes.gmtOffset);
-      this.calcTime();
     }
   }
 }

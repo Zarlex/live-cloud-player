@@ -35,7 +35,7 @@ import {Player} from '../../models/player';
     YoutubePlayerComponent
   ]
 })
-export class PlayerManagerComponent implements OnInit, OnChanges {
+export class PlayerManagerComponent implements OnInit {
   private _volume = 0;
   private _playerStatus;
   private _errorOccured = false;
@@ -136,9 +136,10 @@ export class PlayerManagerComponent implements OnInit, OnChanges {
     );
     player.subscriptions.add(
       this.renderer.listen(player.player.instance.el.nativeElement, 'click', () => {
-        this.selectedTrackChange.emit(null);
+        this.selectedTrackChange.emit(player.player.instance.track);
+        player.player.instance.play();
       })
-    )
+    );
   }
 
   private activatePlayer(newPlayer: ComponentRef<IPlayer>, startTime?: number, canPlay: boolean = true) {
@@ -157,8 +158,6 @@ export class PlayerManagerComponent implements OnInit, OnChanges {
     const playerSize = PlayerFactory.getPlayerSize(newPlayer.instance.track);
     this.setHeight(playerSize.height);
     newPlayer.instance.setSize(playerSize);
-
-    //this.bindListeners(newPlayer.instance);
   }
 
   private addPlayer(playQueueItem: PlayQueueItem) {
@@ -170,9 +169,6 @@ export class PlayerManagerComponent implements OnInit, OnChanges {
       this._players.add(player);
       this.activatePlayer(newPlayer);
       this.bindListeners(player);
-      console.log('CREATED PLAYER');
-    } else {
-      console.warn('DOES ALREADY EXIST');
     }
   }
 
@@ -184,65 +180,21 @@ export class PlayerManagerComponent implements OnInit, OnChanges {
       this._playerFactory.destroyPlayer(existingPlayer.player);
       this._players.remove(existingPlayer);
       this.unBindListeners(existingPlayer);
-      console.warn('REMOVED PLAYER')
     }
-  }
-
-  private updatePlayerWidth(width: number) {
-    // PlayerFactory.playerWidth = width;
-    // if (this._activePlayer) {
-    //   const playerSize = PlayerFactory.getPlayerSize(this._activePlayer.instance.track);
-    //   this._activePlayer.instance.setSize(playerSize);
-    //   this.setHeight(playerSize.height);
-    // }
-    // if (this._upcomingPlayer) {
-    //   this._upcomingPlayer.instance.setSize(PlayerFactory.getPlayerSize(this._upcomingPlayer.instance.track));
-    // }
-  }
-
-  private enteredFullScreen() {
-    this._sizeBeforeFullScreen = PlayerFactory.playerWidth;
-    this.updatePlayerWidth(screen.width);
-  }
-
-  private leftFullScreen() {
-    this.updatePlayerWidth(this._sizeBeforeFullScreen);
   }
 
   ngOnInit(): void {
     this._playerFactory.setContainer(this.container);
     this.playQueue.on('remove', (playQueueItem) => {
       this.removePlayer(playQueueItem);
-      console.log('REMOVE PLAYER');
     });
 
     const debouncedOnAdd = debounce(() => {
       this.playQueue.each((playQueueItem) => {
-        console.log('ADD');
         this.addPlayer(playQueueItem);
       })
     }, 1000);
 
     this.playQueue.on('add', this.addPlayer.bind(this));
-
-    this.fullScreenService.getObservable()
-      .filter(eventType => eventType === FullScreenEventType.Enter)
-      .subscribe(this.enteredFullScreen.bind(this));
-
-    this.fullScreenService.getObservable()
-      .filter(eventType => eventType === FullScreenEventType.Leave)
-      .subscribe(this.leftFullScreen.bind(this));
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.volume) {
-      //this._volume = changes.volume.currentValue / 100;
-      // if (this._activePlayer) {
-      //   this._activePlayer.instance.setVolume(this._volume);
-      // }
-      // if (this._upcomingPlayer) {
-      //   this._upcomingPlayer.instance.setVolume(this._volume);
-      // }
-    }
   }
 }

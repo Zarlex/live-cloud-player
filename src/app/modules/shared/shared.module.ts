@@ -8,8 +8,8 @@ import {KMilShortenerPipe} from './pipes/k-mil-shortener.pipe';
 
 import {LimitCollectionresultsPipe} from './pipes/limit-collection-results.pipe';
 import {FullScreenService} from './services/fullscreen.service';
-import {TrackCoverComponent} from './components/track-cover/track-cover.component';
 import {BingMapComponent} from './components/bing-map/bing-map';
+import {WorldClockComponent} from './components/world-clock/world-clock';
 
 @NgModule({
   imports: [
@@ -22,16 +22,16 @@ import {BingMapComponent} from './components/bing-map/bing-map';
     HumanReadableSecondsPipe,
     KMilShortenerPipe,
     LimitCollectionresultsPipe,
-    TrackCoverComponent,
-    BingMapComponent
+    BingMapComponent,
+    WorldClockComponent
   ],
   exports: [
     TimeAgoDirective,
     HumanReadableSecondsPipe,
     KMilShortenerPipe,
     LimitCollectionresultsPipe,
-    TrackCoverComponent,
-    BingMapComponent
+    BingMapComponent,
+    WorldClockComponent
   ],
   providers: [
     HumanReadableSecondsPipe,

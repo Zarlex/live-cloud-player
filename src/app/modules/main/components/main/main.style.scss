@@ -1,15 +1,17 @@
 html, body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .ui {
-  height: calc(100vh - 20px);
-  overflow: scroll;
+  height: 100vw;
+  width: 100vw;
+  overflow: hidden;
   padding: 10px;
 }
 
-h1{
+h1 {
   position: absolute;
   width: 100vw;
   z-index: 9;
@@ -20,9 +22,9 @@ h1{
   left: 0;
   padding: 30px 0;
   color: white;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
 
-  input{
+  input {
     background: transparent;
     border: none;
     border-bottom: 1px solid white;
@@ -31,5 +33,76 @@ h1{
     color: white;
     text-align: center;
     outline: none;
+  }
+}
+
+.introduction {
+  top: 200px;
+  background: black;
+  position: fixed;
+  width: 80vw;
+  //height: calc(100vh - 400px);
+  z-index: 999999;
+  left: 10vw;
+  color: white;
+  padding: 10px;
+
+  a {
+    color: white;
+  }
+}
+
+.btn {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #46B29D;
+  border-color: #324D5C;
+
+  &:hover {
+    color: #fff;
+    background-color: #46B29D;
+    border-color: #46B29D;
+  }
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+
+  h1,
+  h1 input {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 900px) {
+
+  h1,
+  h1 input {
+    font-size: 20px;
   }
 }
