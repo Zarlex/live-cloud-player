@@ -2,7 +2,7 @@
 
 [![Cloud Player Teaser](./src/assets/cover.jpg)](https://live.cloud-player.io)
 
-This is 22h hackathon project created at [ValHacks 2018](http://best.dtu.dk/hackathon/).
+This is a 22h hackathon project created at [ValHacks 2018](http://best.dtu.dk/hackathon/).
 Browse the world and see all the livevideos that are broadcasted nearby the location on YouTube.
 
 [Start the App](https://live.cloud-player.io)
