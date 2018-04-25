@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
+import {ApiKeys} from '../../../../../api-keys';
 
 @Component({
   selector: 'app-bing-map',
@@ -10,8 +11,10 @@ export class BingMapComponent implements OnInit, OnChanges {
   private _bingApiReady = false;
   private _map: Microsoft.Maps.Map;
   private _markers: Array<Microsoft.Maps.Polygon>;
+  private _scannerLines: Array<Microsoft.Maps.Polyline>;
   private _highlightMarker: Microsoft.Maps.Polygon;
   private _polygons: Array<Microsoft.Maps.Polygon>;
+  private _radarCircle: Array<Microsoft.Maps.Location>;
 
   @Input()
   markers: Array<{ latitude: number, longitude: number }>;
@@ -20,18 +23,14 @@ export class BingMapComponent implements OnInit, OnChanges {
   highlightMarker: { latitude: number, longitude: number };
 
   @Output()
-  locationChange: EventEmitter<string>;
+  locationChange: EventEmitter<{ latitude: number, longitude: number }>;
 
   @Output()
   labelChange: EventEmitter<string>;
 
-  @Output()
-  timezoneChange: EventEmitter<string>;
-
   constructor(private http: HttpClient) {
-    this.locationChange = new EventEmitter<string>();
+    this.locationChange = new EventEmitter();
     this.labelChange = new EventEmitter<string>();
-    this.timezoneChange = new EventEmitter<string>();
     this._markers = [];
     this._polygons = [];
   }
@@ -51,7 +50,7 @@ export class BingMapComponent implements OnInit, OnChanges {
         const scripts = document.getElementsByTagName('script')[0];
         js = document.createElement('script');
         js.id = bingElId;
-        js.src = '//www.bing.com/api/maps/mapcontrol?callback=GetMap&setMkt=en-US&setLang=en&key=AmrReV9OPw9ybu5AkhPD8v5WWmR9rqw9Dqzr6hSXhjJdFykhOqXlH14S4-NJ2fDo';
+        js.src = `//www.bing.com/api/maps/mapcontrol?callback=GetMap&setMkt=en-US&setLang=en&key=${ApiKeys.microsoftKey}`;
         scripts.parentNode.insertBefore(js, bingScriptEl);
       }
     });
@@ -78,25 +77,42 @@ export class BingMapComponent implements OnInit, OnChanges {
     return locs;
   }
 
+  private drawScanner(origin: { latitude: number, longitude: number }, circle: Array<{ latitude: number, longitude: number }>, at: number) {
+    if (at > circle.length) {
+      at = circle.length;
+    }
+    this._scannerLines = [];
+    const coords = [new Microsoft.Maps.Location(origin.latitude, origin.longitude), new Microsoft.Maps.Location(circle[at].latitude, circle[at].longitude)];
+
+    //Create a polyline
+    const line = new Microsoft.Maps.Polyline(coords, {
+      strokeColor: '#00e13c',
+      strokeThickness: 3,
+      strokeDashArray: [4, 4]
+    });
+    this._scannerLines.push(line);
+    this.drawPolygons();
+  }
+
   private drawCircle(radius: number, origin: { latitude: number, longitude: number }) {
-    const bigCircle = this.getCircle(radius, origin);
+    this._radarCircle = this.getCircle(radius, origin);
     const bigCircleOptions = {
       visible: true,
       strokeThickness: 2,
       strokeDashArray: "1",
-      fillColor: new Microsoft.Maps.Color(50, 0, 0, 200),
-      strokeColor: new Microsoft.Maps.Color(200, 0, 0, 200)
+      fillColor: new Microsoft.Maps.Color(50, 0, 225, 60),
+      strokeColor: new Microsoft.Maps.Color(200, 0, 225, 60)
     };
     const smallCircle = this.getCircle(50, origin);
     const smallCircleOptions = {
       visible: true,
       strokeThickness: 2,
       strokeDashArray: "1",
-      fillColor: new Microsoft.Maps.Color(200, 0, 0, 200),
-      strokeColor: new Microsoft.Maps.Color(200, 0, 0, 200)
+      fillColor: new Microsoft.Maps.Color(1000, 0, 225, 60),
+      strokeColor: new Microsoft.Maps.Color(1000, 0, 225, 60)
     };
     this._polygons = [];
-    this._polygons.push(new Microsoft.Maps.Polygon(bigCircle, bigCircleOptions));
+    this._polygons.push(new Microsoft.Maps.Polygon(this._radarCircle, bigCircleOptions));
     this._polygons.push(new Microsoft.Maps.Polygon(smallCircle, smallCircleOptions));
     this.drawPolygons();
   };
@@ -126,10 +142,10 @@ export class BingMapComponent implements OnInit, OnChanges {
       });
       const smallCircleOptions = {
         visible: true,
-        strokeThickness: 2,
-        strokeDashArray: "1",
-        fillColor: new Microsoft.Maps.Color(200, 0, 200, 0),
-        strokeColor: new Microsoft.Maps.Color(200, 0, 200, 0)
+        strokeThickness: 4,
+        strokeDashArray: "0",
+        fillColor: new Microsoft.Maps.Color(255, 200, 0, 0),
+        strokeColor: new Microsoft.Maps.Color(255, 255, 255, 255)
       };
       this._highlightMarker = new Microsoft.Maps.Polygon(smallCircle, smallCircleOptions);
     }
@@ -145,15 +161,20 @@ export class BingMapComponent implements OnInit, OnChanges {
       this._markers.forEach((polygon) => {
         this._map.entities.push(polygon);
       });
-      if(this._highlightMarker){
+      if (this._highlightMarker) {
         this._map.entities.push(this._highlightMarker);
+      }
+      if (this._scannerLines) {
+        this._scannerLines.forEach((polyline) => {
+          this._map.entities.push(polyline);
+        })
       }
     }
   }
 
   private fetchLocationName(origin: { latitude: number, longitude: number }) {
     let httpParams = new HttpParams();
-    httpParams = httpParams.set('key', 'AmrReV9OPw9ybu5AkhPD8v5WWmR9rqw9Dqzr6hSXhjJdFykhOqXlH14S4-NJ2fDo');
+    httpParams = httpParams.set('key', ApiKeys.microsoftKey);
     httpParams = httpParams.set('includeEntityTypes', 'CountryRegion');
     httpParams = httpParams.set('includeNeighborhood', 'true');
     this.http.get(`https://dev.virtualearth.net/REST/v1/Locations/${origin.latitude},${origin.longitude}`, {
@@ -167,18 +188,18 @@ export class BingMapComponent implements OnInit, OnChanges {
     });
   }
 
-  private fetchTimezoneOffset(origin: { latitude: number, longitude: number }) {
-    let httpParams = new HttpParams();
-    httpParams = httpParams.set('key', '8PCJNU1QZULK');
-    httpParams = httpParams.set('by', 'position');
-    httpParams = httpParams.set('format', 'json');
-    httpParams = httpParams.set('lat', origin.latitude.toString());
-    httpParams = httpParams.set('lng', origin.longitude.toString());
-    this.http.get(`https://api.timezonedb.com/v2/get-time-zone`, {
-      params: httpParams
-    }).toPromise().then((rsp: any) => {
-      if (rsp.gmtOffset) {
-        this.timezoneChange.emit(rsp.zoneName);
+  private scan(iteration: number = 0) {
+    if (this._map && this._radarCircle) {
+      this.drawScanner(this._map.getCenter(), this._radarCircle, iteration);
+    }
+    window.requestAnimationFrame(() => {
+      if (iteration < 360) {
+        iteration = iteration += 3;
+        this.scan(iteration)
+      } else {
+        this._scannerLines = null;
+        this.drawPolygons();
+        window.setTimeout(this.scan.bind(this), 3000);
       }
     });
   }
@@ -214,10 +235,11 @@ export class BingMapComponent implements OnInit, OnChanges {
         const center = this._map.getCenter();
         this.drawCircle(800, center);
         this.fetchLocationName(center);
-        this.fetchTimezoneOffset(center);
-        this.locationChange.emit(center.latitude + ',' + center.longitude);
+        this.locationChange.emit({latitude: center.latitude, longitude: center.longitude});
       });
     });
+
+    this.scan();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
